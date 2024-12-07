@@ -7,6 +7,8 @@ import json
 import os
 import sys
 import threading
+import typing
+from datetime import datetime, timezone
 
 PLUGIN_PREFIX = "eql_"
 CASE_INSENSITIVE = True
@@ -471,3 +473,62 @@ class ParserConfig(object):
 
         for mgr in reversed(self.managers):
             mgr.__exit__(exc_type, exc_val, exc_tb)
+
+
+def get_utc_strptime(date: str, datetime_format: str) -> datetime:
+    """Function to transform str to date.
+
+    Parameters
+    ----------
+    date: str
+        String to be transformed.
+    datetime_format: str
+        Datetime pattern.
+
+    Returns
+    -------
+    date: datetime
+        The current date.
+    """
+    return datetime.strptime(date, datetime_format).replace(tzinfo=timezone.utc)
+
+
+def check_date_format(field: str) -> typing.Union[str, datetime]:
+    """Check if a given field is a date. If so, transform the date to the standard format (ISO 8601).
+    If not, return the field.
+
+    Parameters
+    ----------
+    element : str
+        Item to check.
+
+    Returns
+    -------
+    str or datetime
+        In case of a date, return the element after its conversion. Otherwise it return the element.
+    """
+    date_patterns = ['%Y-%m-%d', '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S.%fZ']
+
+    for pattern in date_patterns:
+        try:
+            return get_utc_strptime(field, pattern)
+        except ValueError:
+            pass
+
+    return field
+
+
+def dt_to_timestamp(dt: datetime) -> int:
+    """Convert a datetime object to a timestamp.
+
+    Parameters
+    ----------
+    dt : datetime
+        Datetime object to be converted.
+
+    Returns
+    -------
+    int
+        Timestamp.
+    """
+    return int(dt.timestamp())

@@ -2,6 +2,7 @@ import json
 import sys
 from pprint import pprint
 import eql
+from datetime import datetime
 
 class EQLSearch:
     def _create_events(self, data, timestamp_key) -> list:
@@ -20,13 +21,15 @@ class EQLSearch:
             else:
                 event_type = "generic"
 
+            timestamp_value = 0
             if timestamp_key in item:
-                timestamp_value = item[timestamp_key]
-            else:
-                timestamp_value = 0
+                check = eql.utils.check_date_format(item[timestamp_key])
+                if isinstance(check, datetime):
+                    timestamp_value = eql.utils.dt_to_timestamp(check)
 
             eql_events.append(eql.Event(event_type, timestamp_value, item))
-        
+        for event in eql_events:
+            print(event)
         return eql_events
 
 

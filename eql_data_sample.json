@@ -39,7 +39,7 @@
     },
     {
         "command_line": "winlogon.exe",
-        "@timestamp": "2021-08-29T12:00:00.000Z",
+        "@timestamp": "2021/08/29",
         "event_type": "process",
         "md5": "1151b1baa6f350b1db6598e0fea7c457",
         "pid": 472,
