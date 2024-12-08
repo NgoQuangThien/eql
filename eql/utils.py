@@ -493,7 +493,7 @@ def get_utc_strptime(date: str, datetime_format: str) -> datetime:
     return datetime.strptime(date, datetime_format).replace(tzinfo=timezone.utc)
 
 
-def check_date_format(field: str) -> typing.Union[str, datetime]:
+def ts_to_dt_with_formats(field: str, date_patterns: list) -> typing.Union[str, datetime]:
     """Check if a given field is a date. If so, transform the date to the standard format (ISO 8601).
     If not, return the field.
 
@@ -507,8 +507,6 @@ def check_date_format(field: str) -> typing.Union[str, datetime]:
     str or datetime
         In case of a date, return the element after its conversion. Otherwise it return the element.
     """
-    date_patterns = ['%Y-%m-%d', '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S.%fZ']
-
     for pattern in date_patterns:
         try:
             return get_utc_strptime(field, pattern)
@@ -518,17 +516,41 @@ def check_date_format(field: str) -> typing.Union[str, datetime]:
     return field
 
 
-def dt_to_timestamp(dt: datetime) -> int:
-    """Convert a datetime object to a timestamp.
+def total_seconds(dt):
+    if dt is None:
+        return 0
+    else:
+        return dt.total_seconds()
 
-    Parameters
-    ----------
-    dt : datetime
-        Datetime object to be converted.
 
-    Returns
-    -------
-    int
-        Timestamp.
-    """
-    return int(dt.timestamp())
+def dt_to_int(dt):
+    dt = dt.replace(tzinfo=timezone.utc)
+    return int(total_seconds((dt - datetime.fromtimestamp(0, tz=timezone.utc))) * 1000)
+
+
+def get_event_type(data, event_type_key):
+    keys = event_type_key.split(".")
+
+    for key in keys:
+        if isinstance(data, dict) and key in data:
+            data = data[key]
+        else:
+            data = "generic"
+
+    return data
+
+
+def get_event_time(data, timestamp_key, date_patterns):
+    keys = timestamp_key.split(".")
+    for key in keys:
+        if isinstance(data, dict) and key in data:
+            data = data[key]
+        else:
+            return 0
+
+    data = ts_to_dt_with_formats(data, date_patterns)
+
+    if not isinstance(data, datetime):
+        return 0
+
+    return dt_to_int(data)

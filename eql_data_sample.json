@@ -3,11 +3,11 @@
         "event":{
             "category": "network"
         },
-        "@timestamp": "2021-08-31T12:00:00.000Z",
+        "@timestamp": "2021-08-31T12:10:20.100Z",
         "timestamp": 131485996510000000,
         "event_type": "network",
         "parent_process_name": "System Idle Process",
-        "@pid": 4,
+        "pid": 3,
         "process_name": "System",
         "subtype": "create",
         "user": "NT AUTHORITY\\SYSTEM",
@@ -39,7 +39,7 @@
     },
     {
         "command_line": "winlogon.exe",
-        "@timestamp": "2021/08/29",
+        "@timestamp": "2021-08-29",
         "event_type": "process",
         "md5": "1151b1baa6f350b1db6598e0fea7c457",
         "pid": 472,
