@@ -1210,7 +1210,6 @@ class PythonEngine(BaseEngine, BaseTranspiler):
         for event in events:
             if not isinstance(event, Event):
                 event = Event.from_data(event)
-                print(event)
             self.stream_event(event)
         if finalize:
             self.finalize()
