@@ -537,6 +537,9 @@ def get_event_type(data, event_type_key):
         else:
             data = "generic"
 
+    if not isinstance(data, str):
+        return "generic"
+
     return data
 
 
