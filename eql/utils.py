@@ -535,7 +535,7 @@ def get_event_type(data, event_type_key):
         if isinstance(data, dict) and key in data:
             data = data[key]
         else:
-            data = "generic"
+            return "generic"
 
     if not isinstance(data, str):
         return "generic"
@@ -550,6 +550,9 @@ def get_event_time(data, timestamp_key, date_patterns):
             data = data[key]
         else:
             return 0
+
+    if not isinstance(data, str):
+        return 0
 
     data = ts_to_dt_with_formats(data, date_patterns)
 
